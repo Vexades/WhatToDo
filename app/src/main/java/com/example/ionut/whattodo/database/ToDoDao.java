@@ -1,17 +1,13 @@
 package com.example.ionut.whattodo.database;
 
 import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.RoomWarnings;
-import android.arch.persistence.room.Update;
 
-import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Flowable;
-import io.reactivex.Observable;
 
 @Dao
 public interface  ToDoDao {

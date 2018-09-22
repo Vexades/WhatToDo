@@ -2,9 +2,7 @@ package com.example.ionut.whattodo.database;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
-import android.arch.persistence.room.RoomWarnings;
 import android.arch.persistence.room.TypeConverters;
 
 import java.util.Date;

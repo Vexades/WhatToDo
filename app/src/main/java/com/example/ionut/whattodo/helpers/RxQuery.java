@@ -9,7 +9,6 @@ import com.example.ionut.whattodo.Notifications;
 import com.example.ionut.whattodo.database.ToDoDatabase;
 import com.example.ionut.whattodo.database.ToDoModel;
 import com.example.ionut.whattodo.widgets.SelectedDateNotifications;
-import com.example.ionut.whattodo.widgets.TimeWrapper;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -18,9 +17,9 @@ import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 
 public class RxQuery {
-    Context context ;
-     private Notifications notifications;
-    private SelectedDateNotifications selectedDateNotifications;
+    private  Context context;
+     private final Notifications notifications;
+    private final SelectedDateNotifications selectedDateNotifications;
 
     public RxQuery(Context context, SelectedDateNotifications selectedDateNotifications, Notifications notifications){
         this.context = context;
@@ -28,7 +27,7 @@ public class RxQuery {
         this.selectedDateNotifications = selectedDateNotifications;
     }
 
-    final ToDoDatabase db = ToDoDatabase.getInstance(context);
+    private final ToDoDatabase db = ToDoDatabase.getInstance(context);
     public void insertNewModel(ToDoModel toDoModel){
         Flowable.just(db)
                 .subscribeOn(Schedulers.io())

@@ -5,22 +5,17 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import com.example.ionut.whattodo.Notifications;
 import com.example.ionut.whattodo.R;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -32,38 +27,34 @@ import static android.view.View.VISIBLE;
 
 public class TimeWrapper implements   DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-    private ImageView imageView;
-    private TextView dateTextView;
+    private final TextView dateTextView;
     private Date currentDate;
-    private Context context;
+    private final Context context;
     private boolean isTimeChosen = false;
     private int firstTimeRun = 1;
     private AdapterView adapterView;
-    public int returnMaxType;
-    private  SelectedDateNotifications selectedDateNotifications;
+    private int returnMaxType;
+    private final SelectedDateNotifications selectedDateNotifications;
 
 
 
 
-    private TextView view;
+    private final TextView view;
 
 
     public TimeWrapper(final ImageView imageView, TextView textView, TextView dateTextView, Context context, SelectedDateNotifications selectedDateNotifications) {
-        this.imageView = imageView;
+        ImageView imageView1 = imageView;
         this.context = context;
         this.dateTextView = dateTextView;
         this.view = textView;
-        setDate(getCurrentDate());
+        setDate();
         returnMaxType = 0;
         this.selectedDateNotifications = selectedDateNotifications;
 
     }
 
-    public TimeWrapper(){
 
-    }
-
-    private void setDate(Date date) {
+    private void setDate() {
         @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("cccc \ndd.MM.yyyy, H:mm", Locale.US);
         if (currentDate == null) {
             currentDate = new Date();
@@ -88,13 +79,6 @@ public class TimeWrapper implements   DatePickerDialog.OnDateSetListener, TimePi
         }
     }
 
-    public String getDateFormatted(Date currentDate) {
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("cccc \ndd.MM.yyyy, H:mm", Locale.US);
-        return format.format(currentDate);
-    }
-
-
-
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         Calendar calendar = new GregorianCalendar();
@@ -112,9 +96,9 @@ public class TimeWrapper implements   DatePickerDialog.OnDateSetListener, TimePi
             currentDate = calendar.getTime();
         }else if(firstTimeRun == 0){
             firstTimeRun = -1;
-            setDate(currentDate);
+            setDate();
         }else {
-            setDate(new Date());
+            setDate();
         }
 
 
@@ -123,7 +107,7 @@ public class TimeWrapper implements   DatePickerDialog.OnDateSetListener, TimePi
     }
 
     public void initialize(Activity activity){
-        View v = activity.getLayoutInflater().inflate(R.layout.single_item_view,null);
+        @SuppressLint("InflateParams") View v = activity.getLayoutInflater().inflate(R.layout.single_item_view,null);
         LinearLayout linearLayout = v.findViewById(R.id.linearSelections);
         if(currentDate.getTime() != 0){
             linearLayout.setVisibility(VISIBLE);
@@ -132,7 +116,7 @@ public class TimeWrapper implements   DatePickerDialog.OnDateSetListener, TimePi
         }
     }
 
-    public int returnMaxTime(){
+    private int returnMaxTime(){
         Notifications notifications = new Notifications(context);
         if(currentDate == null){
             return notifications.returnMaxTime(new Date());
@@ -145,7 +129,7 @@ public class TimeWrapper implements   DatePickerDialog.OnDateSetListener, TimePi
         final GregorianCalendar calendar = new GregorianCalendar();
         calendar.setTime(currentDate);
         DatePickerDialog datePickerDialog = new DatePickerDialog(view.getContext(), this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH));;
+                calendar.get(Calendar.DAY_OF_MONTH));
         datePickerDialog.show();
     }
 
@@ -169,7 +153,7 @@ public class TimeWrapper implements   DatePickerDialog.OnDateSetListener, TimePi
         dateTextView.setVisibility(VISIBLE);
         dateTextView.setText(notifications.getTimeTillFinish(currentDate));
         isTimeChosen = true;
-        setDate(currentDate);
+        setDate();
         selectedDateNotifications.setDate(currentDate.getTime());
         returnMaxType = returnMaxTime();
     }

@@ -6,20 +6,15 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
-import com.chauthai.swipereveallayout.SwipeRevealLayout;
-import com.chauthai.swipereveallayout.ViewBinderHelper;
-import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 import com.example.ionut.whattodo.R;
 import com.example.ionut.whattodo.database.ToDoModel;
 import com.example.ionut.whattodo.fragments.fragmentePrelucrare.DetailFragment;
@@ -39,17 +34,17 @@ public  class MultyViewArray extends RecyclerView.Adapter  {
 
 
 
-    private List<ToDoModel> toDoModels;
-    public static final int MODEL_PICTURE = 0;
-    public static final int MODEL_NORMAL = 1;
-    public static final String DETAIL_FRAG_TAG = "detailFragment";
+    private final List<ToDoModel> toDoModels;
+    private static final int MODEL_PICTURE = 0;
+    private static final int MODEL_NORMAL = 1;
+    private static final String DETAIL_FRAG_TAG = "detailFragment";
 
 
 
     private TextView mTodo, mDate, mTodoF,mDateF;
     private ImageView photo;
     private Button mIsDone;
-    private Context context;
+    private final Context context;
     private Button mIsDoneF;
 
 
@@ -95,7 +90,7 @@ public  class MultyViewArray extends RecyclerView.Adapter  {
                             .addToBackStack(null).commit();
 
                 });
-                if (toDoModels.get(position).ismDone() == true) {
+                if (toDoModels.get(position).ismDone()) {
                     mIsDone.setText(String.valueOf(true));
                 }
             });
@@ -115,7 +110,7 @@ public  class MultyViewArray extends RecyclerView.Adapter  {
                //         .addToBackStack(null).commit();
                 return true;
             });
-            if (toDoModels.get(position).ismDone() == true) {
+            if (toDoModels.get(position).ismDone()) {
                 mIsDone.setText(String.valueOf(true));
             }
 
@@ -172,7 +167,7 @@ public  class MultyViewArray extends RecyclerView.Adapter  {
         }
 
     }
-    public String formatDate(Date date){
+    private String formatDate(Date date){
         @SuppressLint("SimpleDateFormat") DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm");
         return formatter.format(date);
     }

@@ -15,13 +15,12 @@ import com.example.ionut.whattodo.R;
 import com.example.ionut.whattodo.fragments.splittedRecyler.DbRelated;
 
 public class RecyclerViewDone extends Fragment {
-    private RecyclerView recyclerView;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_recycler,container,false);
-         recyclerView = v.findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = v.findViewById(R.id.recyclerView);
          recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         DbRelated dbRelated = new DbRelated(getContext(), recyclerView);
         dbRelated.updateDoneItems();

@@ -5,8 +5,6 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
-import io.reactivex.Flowable;
-
 @Database(entities = {ToDoModel.class},version = 14,exportSchema = false)
 public abstract class ToDoDatabase extends RoomDatabase{
     public abstract ToDoDao toDoDao();

@@ -14,37 +14,30 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ionut.whattodo.database.ToDoDatabase;
 import com.example.ionut.whattodo.database.ToDoModel;
 import com.example.ionut.whattodo.fragments.fragmentePrelucrare.DetailFragment;
-import com.example.ionut.whattodo.helpers.RxQuery;
 import com.example.ionut.whattodo.managers.BroadCastManager;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Flowable;
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 public class RecyclerViewClass extends RecyclerView.Adapter<RecyclerViewClass.MyHolder> {
 
-    private List<ToDoModel> toDoModels;
-    public static final String DETAIL_FRAG_TAG = "detailFragment";
+    private final List<ToDoModel> toDoModels;
+    private static final String DETAIL_FRAG_TAG = "detailFragment";
 
 
-    public Context context;
-    private boolean paused;
+    private final Context context;
     public ImageView photo;
 
 
@@ -86,13 +79,12 @@ public class RecyclerViewClass extends RecyclerView.Adapter<RecyclerViewClass.My
     }
 
     class MyHolder extends RecyclerView.ViewHolder {
-        private TextView calendar_text;
-        private TextView time_text;
-        ImageView notification_off;
-        ImageView notification_on;
-        private boolean state = true;
-        private TextView time_left;
-        TextView mTodo;
+        private final TextView calendar_text;
+        private final TextView time_text;
+        final ImageView notification_off;
+        final ImageView notification_on;
+        private final TextView time_left;
+        final TextView mTodo;
 
         MyHolder(@NonNull View itemView) {
             super(itemView);
@@ -111,16 +103,19 @@ public class RecyclerViewClass extends RecyclerView.Adapter<RecyclerViewClass.My
                 mainScreen.getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, fragment, DETAIL_FRAG_TAG)
                         .addToBackStack(null).commit();
             });
-            if (toDoModels.get(getAdapterPosition()).ismPause() == true) {
+
+            if (toDoModels.get(getAdapterPosition()).ismPause()) {
                 notification_on.setVisibility(View.INVISIBLE);
                 notification_off.setVisibility(View.VISIBLE);
                 String ns = Context.NOTIFICATION_SERVICE;
                 NotificationManager manager = (NotificationManager) context.getSystemService(ns);
+                assert manager != null;
                 manager.cancel(toDoModel.getmId());
                 Intent intent = new Intent(context, BroadCastManager.class);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
                         toDoModel.getmId(), intent, 0);
                 AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                assert am != null;
                 am.cancel(pendingIntent);
                 pendingIntent.cancel();
             } else {
@@ -135,6 +130,7 @@ public class RecyclerViewClass extends RecyclerView.Adapter<RecyclerViewClass.My
                 notification_off.setVisibility(View.VISIBLE);
                 String ns = Context.NOTIFICATION_SERVICE;
                 NotificationManager manager = (NotificationManager) context.getSystemService(ns);
+                assert manager != null;
                 manager.cancel(toDoModel.getmId());
             });
 

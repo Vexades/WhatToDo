@@ -1,33 +1,21 @@
 package com.example.ionut.whattodo;
 
-import android.accessibilityservice.GestureDescription;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.SystemClock;
-import android.support.v4.app.Fragment;
-import android.view.View;
-import android.widget.CheckBox;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ionut.whattodo.managers.BroadCastManager;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
-
-import io.reactivex.Observable;
-import io.reactivex.schedulers.Schedulers;
 
 public class Notifications {
-    private Context context;
-    public static final int MINUTES = 0;
-    public static final int HOURS = 1;
-    public static final int DAYS = 2;
+    private final Context context;
+    private static final int MINUTES = 0;
+    private static final int HOURS = 1;
+    private static final int DAYS = 2;
 
 
 
@@ -40,7 +28,7 @@ public class Notifications {
     public void sendNotDoneNotification( String name, String idOfModel, Context context, Date finalDate, int uniqueInt) {
         int uniqueId ;
         if(uniqueInt == 0){
-            uniqueId = 0 + 100000;
+            uniqueId = 100000;
         }else {
             uniqueId = uniqueInt * 100000;
         }
@@ -64,6 +52,7 @@ public class Notifications {
         intent.putExtra("test",System.currentTimeMillis());
         AlarmManager alarm = (AlarmManager)Objects.requireNonNull(context).getSystemService(Context.ALARM_SERVICE);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context,idOfModel,intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        assert alarm != null;
         alarm.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis()+timeOfPeriodicNotif, timeOfPeriodicNotif, pendingIntent);
     }
 
@@ -127,28 +116,5 @@ public class Notifications {
         return 0;
     }
 
-    public int convertToMinutes(Date date) {
-        Date currentDate = new Date();
-        Date finishedDate = new Date(date.getTime());
-        float differenceInMilli = finishedDate.getTime() - currentDate.getTime();
-            int convertedMinutes = (int) (differenceInMilli / 60000);
-            return convertedMinutes;
-    }
-
-    public int convertToHours(Date date){
-        Date currentDate = new Date();
-        Date finishedDate = new Date(date.getTime());
-        float differenceInMilli = finishedDate.getTime() - currentDate.getTime();
-            long convertedHours = (long) (differenceInMilli / 3600000);
-            return (int) convertedHours;
-}
-
-   public int convertToDays(Date date){
-       Date currentDate = new Date();
-       Date finishedDate = new Date(date.getTime());
-       float differenceInMilli = finishedDate.getTime() - currentDate.getTime();
-       long convertedHours = (long) (differenceInMilli / 86400000);
-       return (int) convertedHours;
-   }
 
 }

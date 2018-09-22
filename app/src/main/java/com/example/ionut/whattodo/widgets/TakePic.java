@@ -2,30 +2,24 @@ package com.example.ionut.whattodo.widgets;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.ionut.whattodo.MainScreen;
-import com.example.ionut.whattodo.fragments.FragmentAddItem;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.Permission;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
@@ -35,17 +29,17 @@ public class TakePic  implements View.OnClickListener{
     private Context context;
     private final Fragment parentFragment;
     public static final int TAKE_PHOTO = 1;
-    private FloatingActionButton takePic;
+    private final FloatingActionButton takePic;
     private boolean isClicked = false;
 
     public String getmCurrentPhotoPath() {
         return mCurrentPhotoPath;
     }
 
-    public TakePic(final FloatingActionButton button, final Fragment fragment){
-      this.takePic = button;
-      this.context = context;
-      this.parentFragment = fragment;
+    public TakePic( final FloatingActionButton button, final Fragment fragment){
+   //    this.context = context;
+        this.takePic = button;
+        this.parentFragment = fragment;
 
         this.takePic.setClickable(true);
         this.takePic.setOnClickListener(this);
@@ -57,7 +51,7 @@ public class TakePic  implements View.OnClickListener{
     private void dispatchTakePictureIntent(){
         if(isClicked) {
             if (ContextCompat.checkSelfPermission(takePic.getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
-                    || (ContextCompat.checkSelfPermission(parentFragment.getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                    || (ContextCompat.checkSelfPermission(Objects.requireNonNull(parentFragment.getActivity()), Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
                     PackageManager.PERMISSION_GRANTED)) {
 //                Toast.makeText(context, "Please grant permission", Toast.LENGTH_SHORT).show();
 
@@ -72,7 +66,7 @@ public class TakePic  implements View.OnClickListener{
             } else {
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 takePictureIntent.putExtra("return-data", true);
-                if (takePictureIntent.resolveActivity(parentFragment.getContext().getPackageManager()) != null) {
+                if (takePictureIntent.resolveActivity(Objects.requireNonNull(parentFragment.getContext()).getPackageManager()) != null) {
                     File photoFile = null;
 
                     try {
@@ -99,7 +93,7 @@ public class TakePic  implements View.OnClickListener{
        // mCurrentPhotoPath = null;
         @SuppressLint("SimpleDateFormat") String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmm").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = parentFragment.getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = Objects.requireNonNull(parentFragment.getContext()).getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(imageFileName,".jpg",storageDir);
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
@@ -108,7 +102,7 @@ public class TakePic  implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        if(isClicked == false) {
+        if(!isClicked) {
             isClicked = true;
             dispatchTakePictureIntent();
         }

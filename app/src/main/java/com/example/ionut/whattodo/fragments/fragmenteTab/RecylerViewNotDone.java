@@ -7,16 +7,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.ionut.whattodo.R;
-import com.example.ionut.whattodo.database.ToDoDatabase;
 import com.example.ionut.whattodo.fragments.splittedRecyler.DbRelated;
-
-import io.reactivex.schedulers.Schedulers;
 
 public class RecylerViewNotDone extends Fragment {
 

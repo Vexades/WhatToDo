@@ -1,5 +1,6 @@
 package com.example.ionut.whattodo.fragments.splittedRecyler;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
@@ -14,14 +15,15 @@ import io.reactivex.schedulers.Schedulers;
 
 public class DbRelated {
 
-    private Context context;
-    private RecyclerView recyclerView;
+    private final Context context;
+    private final RecyclerView recyclerView;
 
 
     public DbRelated(Context context, RecyclerView recyclerView){
         this.context = context;
         this.recyclerView = recyclerView;
     }
+    @SuppressLint("CheckResult")
     public void updateUINotDoneItems() {
         if(context instanceof MainScreen){
             MainScreen mainScreen = (MainScreen)context;
@@ -38,6 +40,7 @@ public class DbRelated {
 
                 });
     }
+    @SuppressLint("CheckResult")
     public void updateDoneItems(){
         if(context instanceof MainScreen){
             MainScreen mainScreen = (MainScreen)context;

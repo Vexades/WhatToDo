@@ -11,10 +11,8 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
-import android.widget.Toast;
 
 import com.example.ionut.whattodo.fragments.FragmentAddItem;
 import com.example.ionut.whattodo.fragments.LockableViewPager;
@@ -22,7 +20,6 @@ import com.example.ionut.whattodo.fragments.LockableViewPager;
 import com.example.ionut.whattodo.fragments.fragmenteTab.RecyclerViewDone;
 import com.example.ionut.whattodo.fragments.fragmenteTab.RecylerViewNotDone;
 import com.example.ionut.whattodo.fragments.ViewPageAdapter;
-import com.example.ionut.whattodo.fragments.splittedRecyler.MultyViewArray;
 
 public class MainScreen extends AppCompatActivity  {
 
@@ -35,7 +32,7 @@ public class MainScreen extends AppCompatActivity  {
 
 
 
-    @SuppressLint("RestrictedApi")
+    @SuppressLint({"RestrictedApi", "CutPasteId"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +43,7 @@ public class MainScreen extends AppCompatActivity  {
         LockableViewPager lockableViewPager;
         lockableViewPager = findViewById(R.id.pager);
         lockableViewPager.setSwipeable(false);
-        ViewPager viewPager = findViewById(R.id.pager);
+        @SuppressLint("CutPasteId") ViewPager viewPager = findViewById(R.id.pager);
         setupViewPager(viewPager);
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);

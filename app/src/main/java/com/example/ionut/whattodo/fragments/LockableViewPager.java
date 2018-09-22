@@ -24,6 +24,6 @@ public class LockableViewPager extends ViewPager {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent arg0) {
-        return (this.swipeable) ? super.onInterceptTouchEvent(arg0) : false;
+        return (this.swipeable) && super.onInterceptTouchEvent(arg0);
     }
 }

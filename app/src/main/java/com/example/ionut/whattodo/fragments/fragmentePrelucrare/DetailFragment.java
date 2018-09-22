@@ -1,7 +1,6 @@
 package com.example.ionut.whattodo.fragments.fragmentePrelucrare;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,17 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.example.ionut.whattodo.MainScreen;
 import com.example.ionut.whattodo.R;
 import com.example.ionut.whattodo.database.ToDoDatabase;
 
 import java.util.Objects;
-
-import io.reactivex.schedulers.Schedulers;
 
 public class DetailFragment extends Fragment {
 
