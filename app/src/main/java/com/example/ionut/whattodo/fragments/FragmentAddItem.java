@@ -27,7 +27,7 @@ import com.example.ionut.whattodo.Notifications;
 import com.example.ionut.whattodo.R;
 import com.example.ionut.whattodo.database.ToDoDatabase;
 import com.example.ionut.whattodo.database.ToDoModel;
-import com.example.ionut.whattodo.helpers.RxQuery;
+import com.example.ionut.whattodo.helpers.DatabaseQueries;
 import com.example.ionut.whattodo.widgets.SelectedDateNotifications;
 import com.example.ionut.whattodo.widgets.TakePic;
 import com.example.ionut.whattodo.widgets.TimeWrapper;
@@ -46,7 +46,7 @@ public class FragmentAddItem extends Fragment  {
     private String mPhoto;
     private ImageView photo;
     private ImageView calendarImageView;
-    private boolean isPictureTaken = false;
+
 
 
     @SuppressLint({"CheckResult", "CutPasteId"})
@@ -68,11 +68,6 @@ public class FragmentAddItem extends Fragment  {
 
         photo = v.findViewById(R.id.photo);
 
-        if(isPictureTaken){
-            photo.setVisibility(View.VISIBLE);
-        }else {
-            photo.setVisibility(View.GONE);
-        }
 
         takePic = new TakePic( photo_button,this);
         TimeWrapper timeWrapper = new TimeWrapper(calendarImageView, date1,dateTextView,getContext(),selectedDateNotifications);
@@ -93,11 +88,10 @@ public class FragmentAddItem extends Fragment  {
             MainScreen mainScreen = (MainScreen) getActivity();
             Objects.requireNonNull(mainScreen.getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         }
-        ToDoDatabase db = ToDoDatabase.getInstance(getContext());
-
+        DatabaseQueries queries = new DatabaseQueries(getContext(),selectedDateNotifications,notifications);
         //Introduce in baza de date
         mSave.setOnClickListener((View view) -> {
-            ToDoModel newModel = new ToDoModel(Objects.requireNonNull(description.getText()).toString().trim(), timeWrapper.getCurrentDate(), false, mPhoto,false);
+            ToDoModel newModel = new ToDoModel(Objects.requireNonNull(description.getText()).toString().trim(), timeWrapper.getCurrentDate(), false, mPhoto,false,selectedDateNotifications.finalTimeInMilli());
             if (description.getText().toString().trim().isEmpty()) {
                 alertFieldsNotCompeleted("Description");
             } else if (dateTextView.getText().toString().trim().isEmpty() && timeWrapper.isDateDifferenceNegative() == 100) {
@@ -105,26 +99,15 @@ public class FragmentAddItem extends Fragment  {
             }else if( timeWrapper.isDateDifferenceNegative() == -100){
                 alertFieldsNotCompeleted("Date");
         }else{
-               AsyncTask.execute(() -> {
-                   db.toDoDao().insert(newModel);
-                   Intent i = new Intent(getContext(), MainScreen.class);
-                   i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                   Objects.requireNonNull(getContext()).startActivity(i);
-               });
+              queries.insertNewModel(newModel);
             }
-
             AsyncTask.execute(() -> {
-                List<ToDoModel> modelList = db.toDoDao().getAllModelsNormal();
-                for (int i = 0; i <modelList.size() ; i++) {
-                    Log.i("aaab", String.valueOf(modelList.get(i).getmId()));
-                }
-                 RxQuery rxQuery = new RxQuery(getContext(),selectedDateNotifications,notifications);
-                //    rxQuery.sendExpireNotification();
-            if(selectedDateNotifications.finalTimeInMilli() != -1){
-               rxQuery.testPeriodicNotif();
-            }
+            if(selectedDateNotifications.finalTimeInMilli() != -1 && selectedDateNotifications.finalTimeInMilli() !=0){
+               queries.periodicNotif();
+            }else{
+                //Nu avem notificare periodica
+             }
             });
-
         });
         return v;
     }
@@ -166,7 +149,7 @@ public class FragmentAddItem extends Fragment  {
         Toast.makeText(getContext(), "Onactivityserult", Toast.LENGTH_SHORT).show();
         if (requestCode ==  TakePic.TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
             Glide.with(this).load(takePic.getmCurrentPhotoPath()).into(photo);
-            isPictureTaken = true;
+            photo.setVisibility(View.VISIBLE);
             mPhoto = takePic.getmCurrentPhotoPath();
         }
     }

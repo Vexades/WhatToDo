@@ -19,6 +19,17 @@ public class ToDoModel {
     @ColumnInfo(name = "name")
     public String mName;
 
+    public long getmPeriodic() {
+        return mPeriodic;
+    }
+
+    public void setmPeriodic(long mPeriodic) {
+        this.mPeriodic = mPeriodic;
+    }
+
+    @ColumnInfo(name = "periodiclong")
+    public long mPeriodic;
+
     @ColumnInfo(name = "paused")
     public boolean mPause;
 
@@ -37,12 +48,13 @@ public class ToDoModel {
     public ToDoModel(){}
 
 
-    public ToDoModel(String mName, Date mDate, boolean mDone, String mPath, boolean mPause) {
+    public ToDoModel(String mName, Date mDate, boolean mDone, String mPath, boolean mPause, long mPeriodic) {
         this.mName = mName;
         this.mDate = mDate;
         this.mDone = mDone;
         this.mPath = mPath;
         this.mPause = mPause;
+        this.mPeriodic = mPeriodic;
     }
 
     public String getmName() {

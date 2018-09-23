@@ -11,17 +11,18 @@ import com.example.ionut.whattodo.database.ToDoModel;
 import com.example.ionut.whattodo.widgets.SelectedDateNotifications;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 
-public class RxQuery {
+public class DatabaseQueries {
     private  Context context;
      private final Notifications notifications;
     private final SelectedDateNotifications selectedDateNotifications;
 
-    public RxQuery(Context context, SelectedDateNotifications selectedDateNotifications, Notifications notifications){
+    public DatabaseQueries(Context context, SelectedDateNotifications selectedDateNotifications, Notifications notifications){
         this.context = context;
         this.notifications = notifications;
         this.selectedDateNotifications = selectedDateNotifications;
@@ -29,14 +30,12 @@ public class RxQuery {
 
     private final ToDoDatabase db = ToDoDatabase.getInstance(context);
     public void insertNewModel(ToDoModel toDoModel){
-        Flowable.just(db)
-                .subscribeOn(Schedulers.io())
-                .subscribe(item -> {
-                    item.toDoDao().insert(toDoModel);
-                    Intent i = new Intent(context, MainScreen.class);
-                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    context.startActivity(i);
-                });
+        AsyncTask.execute(() -> {
+            db.toDoDao().insert(toDoModel);
+            Intent i = new Intent(context, MainScreen.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            Objects.requireNonNull(context).startActivity(i);
+        });
     }
 
     public void sendExpireNotification(){
@@ -49,14 +48,10 @@ public class RxQuery {
                   //  notifications.sendPeriodicNotificationMinutes(1,b.getmName(),String.valueOf(b.getmId()),context,b.getmDate());
                 },throwable -> throwable.getLocalizedMessage());
     }
-
-
     public long aLong(){
        return selectedDateNotifications.finalTimeInMilli();
     }
-
-    public void testPeriodicNotif(){
-
+    public void periodicNotif(){
         AsyncTask.execute(() -> {
             List<ToDoModel> modelList = db.toDoDao().getAllModelsNormal();
             ToDoModel b = modelList.get( modelList.size() - 1 );

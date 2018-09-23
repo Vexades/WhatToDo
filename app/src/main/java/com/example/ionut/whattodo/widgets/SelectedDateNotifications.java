@@ -96,16 +96,13 @@ public class SelectedDateNotifications implements TextWatcher {
             Date currentDate = new Date();
             Date finishedDate = new Date(date);
             float differenceInMilli = finishedDate.getTime() - currentDate.getTime();
-            if (differenceInMilli >= totalInput ) {
+            if (Objects.requireNonNull(daysInput.getText()).toString().trim().isEmpty() &&
+                    Objects.requireNonNull(minutesInput.getText()).toString().trim().isEmpty()
+                    && Objects.requireNonNull(hoursInput.getText()).toString().trim().isEmpty()) {
+                return 0;
+            } else if(differenceInMilli >= totalInput){
                 return totalInput;
-            } else {
-                if(justToKeepReffrence == 1) {
-                    new AlertDialog.Builder(context)
-                            .setTitle("Number is too large")
-                            .setMessage("The date time for notifications period is too large!")
-                            .setNegativeButton("Dismiss", (dialog, which) -> dialog.dismiss()).show();
-                }
-                justToKeepReffrence = 1;
+            }else {
                 return -1;
             }
         }catch (NumberFormatException e){

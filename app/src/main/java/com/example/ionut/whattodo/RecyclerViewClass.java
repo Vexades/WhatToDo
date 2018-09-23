@@ -26,6 +26,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -143,6 +144,10 @@ public class RecyclerViewClass extends RecyclerView.Adapter<RecyclerViewClass.My
                 AsyncTask.execute(() -> db.toDoDao().updateByIdPaused(toDoModels.get(getAdapterPosition()).getmId(), false));
                 notification_off.setVisibility(View.GONE);
                 notification_on.setVisibility(View.VISIBLE);
+                sendPeriodicNotification(toDoModels.get(getAdapterPosition())
+                .getmName(),toDoModels.get(getAdapterPosition()).getmId(),
+                        context,toDoModels.get(getAdapterPosition()).getmPeriodic(),
+                        false);
             });
 
 
@@ -220,5 +225,19 @@ public class RecyclerViewClass extends RecyclerView.Adapter<RecyclerViewClass.My
             }
         }
         return null;
+    }
+
+    public void sendPeriodicNotification(String name, int idOfModel, Context context,
+                                         long timeOfPeriodicNotif, boolean paused){
+        Intent intent = new Intent(context, BroadCastManager.class);
+        intent.putExtra("toDoName", name);
+        intent.putExtra("id", idOfModel);
+        intent.putExtra("unique", idOfModel);
+        intent.putExtra("paused",paused);
+        intent.putExtra("test",System.currentTimeMillis());
+        AlarmManager alarm = (AlarmManager) Objects.requireNonNull(context).getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context,idOfModel,intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        assert alarm != null;
+        alarm.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis()+timeOfPeriodicNotif, timeOfPeriodicNotif, pendingIntent);
     }
 }
