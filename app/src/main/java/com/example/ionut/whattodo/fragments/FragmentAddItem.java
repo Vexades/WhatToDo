@@ -12,12 +12,13 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,14 +26,12 @@ import com.bumptech.glide.Glide;
 import com.example.ionut.whattodo.MainScreen;
 import com.example.ionut.whattodo.Notifications;
 import com.example.ionut.whattodo.R;
-import com.example.ionut.whattodo.database.ToDoDatabase;
 import com.example.ionut.whattodo.database.ToDoModel;
 import com.example.ionut.whattodo.helpers.DatabaseQueries;
 import com.example.ionut.whattodo.widgets.SelectedDateNotifications;
 import com.example.ionut.whattodo.widgets.TakePic;
 import com.example.ionut.whattodo.widgets.TimeWrapper;
 
-import java.util.List;
 import java.util.Objects;
 
 //Implementam interfata din care luam date de la alt fragment
@@ -48,29 +47,50 @@ public class FragmentAddItem extends Fragment  {
     private ImageView calendarImageView;
 
 
+    private TimeWrapper timeWrapper;
+    private TextView dateTextView;
+
+
+
+
+    private SelectedDateNotifications selectedDateNotifications;
+
 
     @SuppressLint({"CheckResult", "CutPasteId"})
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.single_item_view, container, false);
+        LinearLayout linearLayout = v.findViewById(R.id.notif_layout);
+
         Button mSave = v.findViewById(R.id.save);
         description = v.findViewById(R.id.description);
+
         TextInputEditText daysSelect = v.findViewById(R.id.textDays);
+
+
         TextInputEditText hoursSelect = v.findViewById(R.id.textHours);
         TextInputEditText minutesSelect = v.findViewById(R.id.textMinutes);
         TextView date1 = v.findViewById(R.id.date);
 
 
-        SelectedDateNotifications selectedDateNotifications = new SelectedDateNotifications(getContext(), daysSelect, hoursSelect, minutesSelect);
-        TextView dateTextView = v.findViewById(R.id.dateTextView);
+         selectedDateNotifications = new SelectedDateNotifications(getContext());
+         selectedDateNotifications.setDaysInput(daysSelect);
+         selectedDateNotifications.setHoursInput(hoursSelect);
+         selectedDateNotifications.setMinutesInput(minutesSelect);
+
+
+         dateTextView = v.findViewById(R.id.dateTextView);
+
+
         FloatingActionButton photo_button = v.findViewById(R.id.photo_button);
 
         photo = v.findViewById(R.id.photo);
 
 
         takePic = new TakePic( photo_button,this);
-        TimeWrapper timeWrapper = new TimeWrapper(calendarImageView, date1,dateTextView,getContext(),selectedDateNotifications);
+         timeWrapper = new TimeWrapper(calendarImageView, date1,dateTextView,getContext(),selectedDateNotifications,linearLayout);
+
 
         Notifications notifications = new Notifications(getContext());
         calendarImageView = v.findViewById(R.id.calendarImageView);
@@ -83,6 +103,8 @@ public class FragmentAddItem extends Fragment  {
         });
 
 
+
+
         //Daca fragmetnul apartine activitaii MainScreen, arata butonul
         if (getActivity() instanceof MainScreen) {
             MainScreen mainScreen = (MainScreen) getActivity();
@@ -91,15 +113,17 @@ public class FragmentAddItem extends Fragment  {
         DatabaseQueries queries = new DatabaseQueries(getContext(),selectedDateNotifications,notifications);
         //Introduce in baza de date
         mSave.setOnClickListener((View view) -> {
-            ToDoModel newModel = new ToDoModel(Objects.requireNonNull(description.getText()).toString().trim(), timeWrapper.getCurrentDate(), false, mPhoto,false,selectedDateNotifications.finalTimeInMilli());
+            ToDoModel newModel = new ToDoModel(Objects.requireNonNull(description.getText()).toString().trim(),timeWrapper.getCurrentDate(), false, mPhoto,false,selectedDateNotifications.finalTimeInMilli());
             if (description.getText().toString().trim().isEmpty()) {
                 alertFieldsNotCompeleted("Description");
             } else if (dateTextView.getText().toString().trim().isEmpty() && timeWrapper.isDateDifferenceNegative() == 100) {
                 alertFieldsNotCompeleted("Date");
             }else if( timeWrapper.isDateDifferenceNegative() == -100){
                 alertFieldsNotCompeleted("Date");
-        }else{
-              queries.insertNewModel(newModel);
+        }else if(selectedDateNotifications.finalTimeInMilli() == -1){
+              //cand perioada notificarilor e mai mare decat timpul pana la final
+            }else {
+                queries.insertNewModel(newModel);
             }
             AsyncTask.execute(() -> {
             if(selectedDateNotifications.finalTimeInMilli() != -1 && selectedDateNotifications.finalTimeInMilli() !=0){
@@ -153,4 +177,7 @@ public class FragmentAddItem extends Fragment  {
             mPhoto = takePic.getmCurrentPhotoPath();
         }
     }
+
+
+
 }

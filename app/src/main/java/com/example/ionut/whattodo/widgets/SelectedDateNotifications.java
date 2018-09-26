@@ -11,20 +11,41 @@ import java.util.Objects;
 
 public class SelectedDateNotifications implements TextWatcher {
     private long date;
-    private final TextInputEditText hoursInput;
-    private final TextInputEditText minutesInput;
-    private final TextInputEditText daysInput;
+    private TextInputEditText hoursInput;
+    private  TextInputEditText minutesInput;
+    private  TextInputEditText daysInput;
     private final Context context;
     private int justToKeepReffrence = 1;
 
-    public SelectedDateNotifications(final Context context, final TextInputEditText daysInput, final TextInputEditText hoursInput, final TextInputEditText minutesInput){
-        this.hoursInput = hoursInput;
-        this.minutesInput = minutesInput;
-        this.daysInput = daysInput;
+    public SelectedDateNotifications(final Context context){
         this.context = context;
-        this.daysInput.addTextChangedListener(this);
-        this.minutesInput.addTextChangedListener(this);
+    }
+
+    public TextInputEditText getHoursInput() {
+        return hoursInput;
+    }
+
+    public TextInputEditText getMinutesInput() {
+        return minutesInput;
+    }
+
+    public TextInputEditText getDaysInput() {
+        return daysInput;
+    }
+
+    public void setHoursInput(TextInputEditText textInputEditText){
+        this.hoursInput = textInputEditText;
         this.hoursInput.addTextChangedListener(this);
+    }
+
+    public void setMinutesInput(TextInputEditText minutesInput) {
+        this.minutesInput = minutesInput;
+        this.minutesInput.addTextChangedListener(this);
+    }
+
+    public void setDaysInput(TextInputEditText daysInput) {
+        this.daysInput = daysInput;
+        this.daysInput.addTextChangedListener(this);
     }
 
     @Override
@@ -40,21 +61,21 @@ public class SelectedDateNotifications implements TextWatcher {
     @Override
     public void afterTextChanged(Editable s) {
         try {
-            if (!Objects.requireNonNull(daysInput.getText()).toString().equals("") && convertToDays() > 0) {
-                if (Integer.valueOf(daysInput.getText().toString().trim()) > convertToDays()) {
+            if (!Objects.requireNonNull(getDaysInput().getText()).toString().equals("")  && getDate() > 0) {
+                if (Integer.valueOf(getDaysInput().getText().toString().trim()) > convertToDays()) {
                    justToKeepReffrence = 0;
-                   tooLargeNumber(convertToDays(), Integer.parseInt(daysInput.getText().toString().trim()), "days");
+                   tooLargeNumber(convertToDays(), Integer.parseInt(getDaysInput().getText().toString().trim()), "days");
                 }
             }
 
-            if (!Objects.requireNonNull(hoursInput.getText()).toString().equals("") && convertToHours() > 0) {
-                if (Integer.valueOf(hoursInput.getText().toString().trim()) > convertToHours()) {
+            if (!Objects.requireNonNull(getHoursInput().getText()).toString().equals("")  && getDate() > 0) {
+                if (Integer.valueOf(getHoursInput().getText().toString().trim()) > convertToHours()) {
                    justToKeepReffrence = 0;
-                    tooLargeNumber(convertToHours(), Integer.parseInt(hoursInput.getText().toString().trim()), "hours");
+                    tooLargeNumber(convertToHours(), Integer.parseInt(getHoursInput().getText().toString().trim()), "hours");
                 }
             }
 
-            if (!Objects.requireNonNull(minutesInput.getText()).toString().equals("") && convertToMinutes() > 0) {
+            if (!Objects.requireNonNull(minutesInput.getText()).toString().equals("") && getDate() > 0) {
                 if (Integer.valueOf(minutesInput.getText().toString().trim()) > convertToMinutes()) {
                    justToKeepReffrence = 0;
                     tooLargeNumber(convertToMinutes(), Integer.parseInt(minutesInput.getText().toString().trim()), "minutes");
@@ -74,31 +95,31 @@ public class SelectedDateNotifications implements TextWatcher {
             long totalHours;
             long totalMinutes;
 
-            if(Objects.requireNonNull(daysInput.getText()).toString().trim().isEmpty()){
+            if(Objects.requireNonNull(getDaysInput().getText()).toString().trim().isEmpty()){
                 totalDays = 0;
             }else {
-                totalDays =  Integer.valueOf(daysInput.getText().toString().trim()) * 86400000;
+                totalDays =  Integer.valueOf(getDaysInput().getText().toString().trim()) * 86400000;
             }
 
-            if(Objects.requireNonNull(hoursInput.getText()).toString().trim().isEmpty()){
+            if(Objects.requireNonNull(getHoursInput().getText()).toString().trim().isEmpty()){
                 totalHours = 0;
             }else {
-                totalHours = Integer.valueOf(hoursInput.getText().toString().trim()) * 3600000;
+                totalHours = Integer.valueOf(getHoursInput().getText().toString().trim()) * 3600000;
             }
 
-            if(Objects.requireNonNull(minutesInput.getText()).toString().isEmpty()){
+            if(Objects.requireNonNull(getMinutesInput().getText()).toString().isEmpty()){
                 totalMinutes = 0;
             }else {
-                totalMinutes = Integer.valueOf(minutesInput.getText().toString().trim()) * 60000;
+                totalMinutes = Integer.valueOf(getMinutesInput().getText().toString().trim()) * 60000;
             }
 
             long totalInput = totalDays + totalHours + totalMinutes;
             Date currentDate = new Date();
             Date finishedDate = new Date(date);
             float differenceInMilli = finishedDate.getTime() - currentDate.getTime();
-            if (Objects.requireNonNull(daysInput.getText()).toString().trim().isEmpty() &&
-                    Objects.requireNonNull(minutesInput.getText()).toString().trim().isEmpty()
-                    && Objects.requireNonNull(hoursInput.getText()).toString().trim().isEmpty()) {
+            if (Objects.requireNonNull(getDaysInput().getText()).toString().trim().isEmpty() &&
+                    Objects.requireNonNull(getMinutesInput().getText()).toString().trim().isEmpty()
+                    && Objects.requireNonNull(getHoursInput().getText()).toString().trim().isEmpty()) {
                 return 0;
             } else if(differenceInMilli >= totalInput){
                 return totalInput;
@@ -116,12 +137,13 @@ public class SelectedDateNotifications implements TextWatcher {
 
     public void setDate(long date) {
         this.date = date;
-
     }
 
+    public long getDate() {
+        return date;
+    }
 
-
-    private void tooLargeNumber(int howManyTillFinish ,int userEntered, String typeOfDate){
+    private void tooLargeNumber(int howManyTillFinish , int userEntered, String typeOfDate){
         new AlertDialog.Builder(context)
                 .setTitle("Number is too large")
                 .setMessage( howManyTillFinish + " "+ typeOfDate + " till finish. You entered: "+userEntered+". Please enter a smaller value")

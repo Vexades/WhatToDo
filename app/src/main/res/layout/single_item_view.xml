@@ -8,7 +8,9 @@
     android:layout_height="match_parent"
     android:layout_marginTop="?attr/actionBarSize"
     android:background="@color/colorPrimary"
-    android:elevation="10dp"
+    android:elevation="15dp"
+    android:clickable="true"
+    android:onClick="dismissKeyboad"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -188,153 +190,191 @@
                         android:textColor="@color/yellow_toolbar"
                         android:textSize="16sp"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/optional" />
-
-                    <LinearLayout
-                        android:id="@+id/linearSelections"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-
-                        android:orientation="horizontal"
+                        app:layout_constraintTop_toBottomOf="@+id/optional"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/notif"
-                        app:layout_constraintVertical_bias="0.214"
-                        android:baselineAligned="false">
+                        android:layout_marginBottom="16dp"/>
 
-                        <android.support.design.widget.TextInputLayout
-                            android:id="@+id/textDaysLayout"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="16dp"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="16dp"
-                            android:layout_weight="1"
-                            android:saveEnabled="true"
-                            android:textColorHint="@color/yellow_toolbar"
-                            app:counterEnabled="false"
-                            app:counterMaxLength="4"
-                            app:counterOverflowTextAppearance="@style/TextAppearance.Design.Error"
-                            app:errorEnabled="true"
-                            app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
-
-                            <android.support.design.widget.TextInputEditText
-                                android:id="@+id/textDays"
-                                android:layout_width="80dp"
-                                android:layout_height="wrap_content"
-                                android:hint="Days"
-                                android:imeOptions="flagNoEnterAction"
-                                android:inputType="number"
-                                android:scrollbars="vertical"
-                                android:textColor="#000000"
-                                android:textColorHint="@color/yellow_toolbar"
-                                android:textSize="16sp"
-                                android:typeface="normal" />
-                        </android.support.design.widget.TextInputLayout>
-
-
-                        <android.support.design.widget.TextInputLayout
-                            android:id="@+id/textHoursLayout"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="16dp"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="16dp"
-                            android:layout_weight="1"
-                            android:saveEnabled="true"
-                            android:textColorHint="@color/yellow_toolbar"
-                            app:counterEnabled="false"
-                            app:counterMaxLength="4"
-                            app:counterOverflowTextAppearance="@style/TextAppearance.Design.Error"
-                            app:errorEnabled="true"
-                            app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
-
-                            <android.support.design.widget.TextInputEditText
-                                android:id="@+id/textHours"
-                                android:layout_width="80dp"
-                                android:layout_height="wrap_content"
-                                android:hint="Hours"
-                                android:imeOptions="flagNoEnterAction"
-                                android:inputType="number"
-                                android:scrollbars="vertical"
-                                android:textColor="#000000"
-                                android:textColorHint="@color/yellow_toolbar"
-                                android:textSize="16sp"
-                                android:typeface="normal" />
-                        </android.support.design.widget.TextInputLayout>
-
-                        <android.support.design.widget.TextInputLayout
-                            android:id="@+id/textMinutesLayout"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="24dp"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="16dp"
-                            android:layout_weight="1"
-                            android:saveEnabled="true"
-                            android:textColorHint="@color/yellow_toolbar"
-                            app:counterEnabled="false"
-                            app:counterMaxLength="4"
-                            app:counterOverflowTextAppearance="@style/TextAppearance.Design.Error"
-                            app:errorEnabled="true"
-                            app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
-
-                            <android.support.design.widget.TextInputEditText
-                                android:id="@+id/textMinutes"
-                                android:layout_width="80dp"
-                                android:layout_height="wrap_content"
-                                android:hint="Minutes"
-                                android:imeOptions="flagNoEnterAction"
-                                android:inputType="number"
-                                android:scrollbars="vertical"
-                                android:textColor="#000000"
-                                android:textColorHint="@color/yellow_toolbar"
-                                android:textSize="16sp"
-                                android:typeface="normal" />
-                        </android.support.design.widget.TextInputLayout>
-
-
-                    </LinearLayout>
-                    <android.support.design.widget.FloatingActionButton
-                        android:id="@+id/photo_button"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:layout_marginBottom="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginTop="16dp"
-                        android:backgroundTint="@color/yellow_toolbar"
-                        android:src="@drawable/ic_camera_alt_black_24dp"
-                        android:text="@string/label_photo_button"
-                        android:textColor="@color/dsb_track_color"
-                        android:tint="@color/white"
-                        app:layout_constraintBottom_toTopOf="@id/photo"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/linearSelections"
-
-                        />
-
-                    <ImageView
-                        android:id="@+id/photo"
-                        android:layout_width="0dp"
-                        android:layout_height="200dp"
-                        android:layout_marginBottom="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
-                        android:scaleType="centerCrop"
-                        android:visibility="gone"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/photo_button" />
                 </android.support.constraint.ConstraintLayout>
-
-
             </android.support.v7.widget.CardView>
 
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:orientation="horizontal"
+               android:layout_margin="8dp"
+               android:visibility="gone"
+               android:id="@+id/notif_layout">
 
+               <android.support.v7.widget.CardView
+                   android:id="@+id/daysCard"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_weight="1"
+                   android:transitionName="days_transition_card"
+                   android:layout_marginEnd="8dp">
+
+                   <android.support.design.widget.TextInputLayout
+                       android:id="@+id/textDaysLayout"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_marginEnd="16dp"
+                       android:layout_marginStart="16dp"
+                       android:layout_marginTop="16dp"
+                       android:layout_weight="1"
+                       android:saveEnabled="true"
+                       android:textColorHint="@color/yellow_toolbar"
+                       app:counterEnabled="false"
+                       app:counterMaxLength="4"
+                       app:counterOverflowTextAppearance="@style/TextAppearance.Design.Error"
+                       app:errorEnabled="true"
+                       android:transitionName="days_transition_layout"
+
+                       app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                       <android.support.design.widget.TextInputEditText
+                           android:id="@+id/textDays"
+                           android:layout_width="80dp"
+                           android:layout_height="wrap_content"
+                           android:hint="Days"
+                           android:transitionName="days_transition_text"
+                           android:imeOptions="flagNoEnterAction"
+                           android:inputType="number"
+                           android:scrollbars="vertical"
+                           android:textColor="#000000"
+                           android:textColorHint="@color/yellow_toolbar"
+                           android:textSize="16sp"
+                           android:typeface="normal" />
+                   </android.support.design.widget.TextInputLayout>
+
+               </android.support.v7.widget.CardView>
+
+               <android.support.v7.widget.CardView
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_weight="1"
+                   android:layout_marginEnd="8dp">
+
+                   <android.support.design.widget.TextInputLayout
+                       android:id="@+id/textHoursLayout"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_marginEnd="16dp"
+                       android:layout_marginStart="16dp"
+                       android:layout_marginTop="16dp"
+                       android:layout_weight="1"
+                       android:saveEnabled="true"
+                       android:textColorHint="@color/yellow_toolbar"
+                       app:counterEnabled="false"
+                       app:counterMaxLength="4"
+                       app:counterOverflowTextAppearance="@style/TextAppearance.Design.Error"
+                       app:errorEnabled="true"
+                       android:transitionName="days_transition_layout"
+
+                       app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                       <android.support.design.widget.TextInputEditText
+                           android:id="@+id/textHours"
+                           android:layout_width="80dp"
+                           android:layout_height="wrap_content"
+                           android:hint="Hours"
+                           android:transitionName="days_transition"
+                           android:imeOptions="flagNoEnterAction"
+                           android:inputType="number"
+                           android:scrollbars="vertical"
+                           android:textColor="#000000"
+                           android:textColorHint="@color/yellow_toolbar"
+                           android:textSize="16sp"
+                           android:typeface="normal" />
+                   </android.support.design.widget.TextInputLayout>
+
+               </android.support.v7.widget.CardView>
+
+               <android.support.v7.widget.CardView
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_weight="1">
+
+                   <android.support.design.widget.TextInputLayout
+                       android:id="@+id/textMinutesLayout"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_marginEnd="16dp"
+                       android:layout_marginStart="16dp"
+                       android:layout_marginTop="16dp"
+                       android:layout_weight="1"
+                       android:saveEnabled="true"
+                       android:textColorHint="@color/yellow_toolbar"
+                       app:counterEnabled="false"
+                       app:counterMaxLength="4"
+                       app:counterOverflowTextAppearance="@style/TextAppearance.Design.Error"
+                       app:errorEnabled="true"
+                       android:transitionName="days_transition_layout"
+
+                       app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                       <android.support.design.widget.TextInputEditText
+                           android:id="@+id/textMinutes"
+                           android:layout_width="80dp"
+                           android:layout_height="wrap_content"
+                           android:hint="Minutes"
+                           android:transitionName="days_transition"
+                           android:imeOptions="flagNoEnterAction"
+                           android:inputType="number"
+                           android:scrollbars="vertical"
+                           android:textColor="#000000"
+                           android:textColorHint="@color/yellow_toolbar"
+                           android:textSize="16sp"
+                           android:typeface="normal" />
+                   </android.support.design.widget.TextInputLayout>
+
+               </android.support.v7.widget.CardView>
+
+           </LinearLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp">
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/photo_button"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginBottom="16dp"
+
+                    android:layout_marginTop="16dp"
+                    android:backgroundTint="@color/yellow_toolbar"
+                    android:src="@drawable/ic_camera_alt_black_24dp"
+                    android:text="@string/label_photo_button"
+                    android:textColor="@color/dsb_track_color"
+                    android:tint="@color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+
+                    />
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/photoLayout">
+
+                <ImageView
+                    android:id="@+id/photo"
+                    android:layout_width="0dp"
+                    android:layout_height="200dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                />
+
+            </android.support.constraint.ConstraintLayout>
 
 
         </LinearLayout>

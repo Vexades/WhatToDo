@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
@@ -32,24 +33,28 @@ public class TimeWrapper implements   DatePickerDialog.OnDateSetListener, TimePi
     private final Context context;
     private boolean isTimeChosen = false;
     private int firstTimeRun = 1;
-    private AdapterView adapterView;
-    private int returnMaxType;
+    private boolean dateChosed = false;
     private final SelectedDateNotifications selectedDateNotifications;
+    private String setTimeVariable;
+    private LinearLayout linearLayout;
 
-
-
+    public boolean isDateChosed() {
+        return dateChosed;
+    }
 
     private final TextView view;
 
 
-    public TimeWrapper(final ImageView imageView, TextView textView, TextView dateTextView, Context context, SelectedDateNotifications selectedDateNotifications) {
+    public TimeWrapper(final ImageView imageView, TextView textView, TextView dateTextView, Context context, SelectedDateNotifications selectedDateNotifications, LinearLayout linearLayout) {
         ImageView imageView1 = imageView;
         this.context = context;
         this.dateTextView = dateTextView;
         this.view = textView;
         setDate();
-        returnMaxType = 0;
+        this.linearLayout = linearLayout;
+
         this.selectedDateNotifications = selectedDateNotifications;
+
 
     }
 
@@ -108,7 +113,7 @@ public class TimeWrapper implements   DatePickerDialog.OnDateSetListener, TimePi
 
     public void initialize(Activity activity){
         @SuppressLint("InflateParams") View v = activity.getLayoutInflater().inflate(R.layout.single_item_view,null);
-        LinearLayout linearLayout = v.findViewById(R.id.linearSelections);
+        LinearLayout linearLayout = v.findViewById(R.id.notif_layout);
         if(currentDate.getTime() != 0){
             linearLayout.setVisibility(VISIBLE);
         }else {
@@ -152,10 +157,23 @@ public class TimeWrapper implements   DatePickerDialog.OnDateSetListener, TimePi
         Notifications notifications = new Notifications(context);
         dateTextView.setVisibility(VISIBLE);
         dateTextView.setText(notifications.getTimeTillFinish(currentDate));
+        timeSetVariable(notifications.getTimeTillFinish(currentDate));
         isTimeChosen = true;
         setDate();
         selectedDateNotifications.setDate(currentDate.getTime());
-        returnMaxType = returnMaxTime();
+        linearLayout.setVisibility(VISIBLE);
+
+        //Arata editurile tastaturii
+        isTimeChosen = true;
+       // returnMaxType = returnMaxTime();
+    }
+
+    public void timeSetVariable(String setTimeVariable){
+        this.setTimeVariable = setTimeVariable;
+    }
+
+    public String getSetTimeVariable(){
+        return this.setTimeVariable;
     }
 
 

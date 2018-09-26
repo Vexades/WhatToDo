@@ -1,6 +1,8 @@
 package com.example.ionut.whattodo;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -8,7 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -23,9 +25,8 @@ import com.example.ionut.whattodo.fragments.ViewPageAdapter;
 
 public class MainScreen extends AppCompatActivity  {
 
-    public static final String MAIN_FRAGMENT_TAG = "mainFragment";
+
     private static final String ADD_NOTE_FRAGMENT_TAG = "addNoteFragment";
-    private RecyclerView recyclerView;
     private FloatingActionButton fab;
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private Fragment fragment2 = fragmentManager.findFragmentById(R.id.frameLayout);
@@ -67,9 +68,9 @@ public class MainScreen extends AppCompatActivity  {
             anim.setDuration(200L);
             fab.startAnimation(anim);
             fragment2 = new FragmentAddItem();
-            fragmentManager.beginTransaction().add(R.id.frameLayout, fragment2, ADD_NOTE_FRAGMENT_TAG).addToBackStack(null).commit();
+            fragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_left,R.anim.slide_out_left,R.anim.slide_out_right,R.anim.slide_right).add(R.id.frameLayout, fragment2, ADD_NOTE_FRAGMENT_TAG).addToBackStack(null).commit();
         } else {
-            fragmentManager.beginTransaction().add(R.id.frameLayout, fragment2, ADD_NOTE_FRAGMENT_TAG).addToBackStack(null).commit();
+            fragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_left,R.anim.slide_out_left,R.anim.slide_out_right,R.anim.slide_right).add(R.id.frameLayout, fragment2, ADD_NOTE_FRAGMENT_TAG).addToBackStack(null).commit();
         }
     }
 
@@ -80,16 +81,26 @@ public class MainScreen extends AppCompatActivity  {
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager();
             getSupportFragmentManager().popBackStack(getSupportFragmentManager().getBackStackEntryAt(0).getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        } else {
+        }else{
             super.onBackPressed();
         }
-    }
+        }
+
+
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPageAdapter adapter = new ViewPageAdapter(getSupportFragmentManager());
         adapter.addFrag(new RecylerViewNotDone(),"Not Done");
         adapter.addFrag(new RecyclerViewDone(),"Done");
         viewPager.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i("destory","destoryeed");
+        SharedPreferences sharedPref =this.getPreferences(Context.MODE_PRIVATE);
+        sharedPref.edit().remove("test").clear().commit();
     }
 }
 

@@ -105,7 +105,10 @@ public class RecyclerViewClass extends RecyclerView.Adapter<RecyclerViewClass.My
                         .addToBackStack(null).commit();
             });
 
-            if (toDoModels.get(getAdapterPosition()).ismPause()) {
+
+
+
+            if (toDoModels.get(getAdapterPosition()).ismPause() && toDoModels.get(getAdapterPosition()).getmPeriodic() != 0) {
                 notification_on.setVisibility(View.INVISIBLE);
                 notification_off.setVisibility(View.VISIBLE);
                 String ns = Context.NOTIFICATION_SERVICE;
@@ -119,7 +122,10 @@ public class RecyclerViewClass extends RecyclerView.Adapter<RecyclerViewClass.My
                 assert am != null;
                 am.cancel(pendingIntent);
                 pendingIntent.cancel();
-            } else {
+            } else if(toDoModels.get(getAdapterPosition()).getmPeriodic() == 0){
+                notification_on.setVisibility(View.GONE);
+                notification_off.setVisibility(View.GONE);
+            }else {
                 notification_on.setVisibility(View.VISIBLE);
                 notification_off.setVisibility(View.INVISIBLE);
             }
@@ -134,10 +140,6 @@ public class RecyclerViewClass extends RecyclerView.Adapter<RecyclerViewClass.My
                 assert manager != null;
                 manager.cancel(toDoModel.getmId());
             });
-
-            for (int i = 0; i < toDoModels.size(); i++) {
-                Log.i("asda", String.valueOf(toDoModels.get(i).ismPause()));
-            }
 
             notification_off.setOnClickListener(v -> {
                 ToDoDatabase db = ToDoDatabase.getInstance(context);
@@ -224,7 +226,7 @@ public class RecyclerViewClass extends RecyclerView.Adapter<RecyclerViewClass.My
                 return String.valueOf(converterd) + " days remaining";
             }
         }
-        return null;
+        return "Expired!";
     }
 
     public void sendPeriodicNotification(String name, int idOfModel, Context context,
