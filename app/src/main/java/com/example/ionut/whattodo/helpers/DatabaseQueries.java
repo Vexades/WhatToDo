@@ -38,16 +38,16 @@ public class DatabaseQueries {
         });
     }
 
-    public void sendExpireNotification(){
+  /*  public void sendExpireNotification(){
         db.toDoDao().getAllModels().map(a -> a.get(a.size() - 1))
                 .take(1)
                 .subscribe(b -> {
                     int uniqueInt = ThreadLocalRandom.current().nextInt(1, 10000000 + 1);
                     Notifications notifications = new Notifications(context);
-                    notifications.sendNotDoneNotification(b.getmName(),String.valueOf(b.getmId()),context,b.getmDate(),uniqueInt);
+                    notifications.sendNotDoneNotification(b.getmName(),String.valueOf(b.getmId()),context,b.getmDate(),uniqueInt,1);
                   //  notifications.sendPeriodicNotificationMinutes(1,b.getmName(),String.valueOf(b.getmId()),context,b.getmDate());
                 },throwable -> throwable.getLocalizedMessage());
-    }
+    }*/
     public long aLong(){
        return selectedDateNotifications.finalTimeInMilli();
     }
@@ -59,6 +59,15 @@ public class DatabaseQueries {
                     ,selectedDateNotifications.finalTimeInMilli(),b.ismPause());
         });
         }
+    public void sendExpireNotification(){
+        AsyncTask.execute(() -> {
+            int uniqueInt = ThreadLocalRandom.current().nextInt(1, 10000000 + 1);
+            List<ToDoModel> modelList = db.toDoDao().getAllModelsNormal();
+            ToDoModel b = modelList.get( modelList.size() - 1 );
+            notifications.sendNotDoneNotification(b.getmName(),b.getmId(),context,b.getmDate(),uniqueInt,1);
+        });
+    }
+
 
     }
 

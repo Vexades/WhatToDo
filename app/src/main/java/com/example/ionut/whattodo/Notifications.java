@@ -26,7 +26,7 @@ public class Notifications {
     }
 
 
-    public void sendNotDoneNotification( String name, String idOfModel, Context context, Date finalDate, int uniqueInt) {
+    public void sendNotDoneNotification( String name, int idOfModel, Context context, Date finalDate, int uniqueInt, int cancelPeriodic) {
         int uniqueId ;
         if(uniqueInt == 0){
             uniqueId = 100000;
@@ -38,6 +38,7 @@ public class Notifications {
         intent.putExtra("id", idOfModel);
         intent.putExtra("unique", uniqueId);
         intent.putExtra("date", finalDate.getTime());
+        intent.putExtra("cancelPeriodic", cancelPeriodic);
         AlarmManager alarm = (AlarmManager) Objects.requireNonNull(context).getSystemService(Context.ALARM_SERVICE);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, uniqueInt, intent, PendingIntent.FLAG_ONE_SHOT);
         Objects.requireNonNull(alarm).set(AlarmManager.RTC_WAKEUP, finalDate.getTime(), alarmIntent);

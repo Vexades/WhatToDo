@@ -121,7 +121,9 @@ public class SelectedDateNotifications implements TextWatcher {
                     Objects.requireNonNull(getMinutesInput().getText()).toString().trim().isEmpty()
                     && Objects.requireNonNull(getHoursInput().getText()).toString().trim().isEmpty()) {
                 return 0;
-            } else if(differenceInMilli >= totalInput){
+            } else if( Integer.valueOf(getMinutesInput().getText().toString()) < 15 ){
+                return 10;
+            }else if(differenceInMilli >= totalInput ){
                 return totalInput;
             }else {
                 return -1;

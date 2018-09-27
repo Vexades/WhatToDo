@@ -69,10 +69,7 @@ public class RecyclerViewClass extends RecyclerView.Adapter<RecyclerViewClass.My
         return toDoModels.size();
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return position;
-    }
+
 
     @Override
     public long getItemId(int position) {
@@ -242,4 +239,5 @@ public class RecyclerViewClass extends RecyclerView.Adapter<RecyclerViewClass.My
         assert alarm != null;
         alarm.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis()+timeOfPeriodicNotif, timeOfPeriodicNotif, pendingIntent);
     }
+
 }

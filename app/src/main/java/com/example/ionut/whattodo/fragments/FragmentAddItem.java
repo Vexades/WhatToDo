@@ -92,7 +92,7 @@ public class FragmentAddItem extends Fragment  {
          timeWrapper = new TimeWrapper(calendarImageView, date1,dateTextView,getContext(),selectedDateNotifications,linearLayout);
 
 
-        Notifications notifications = new Notifications(getContext());
+
         calendarImageView = v.findViewById(R.id.calendarImageView);
         calendarImageView.setOnClickListener(v1 -> {
             timeWrapper.openDatePicker();
@@ -103,35 +103,15 @@ public class FragmentAddItem extends Fragment  {
         });
 
 
-
-
         //Daca fragmetnul apartine activitaii MainScreen, arata butonul
         if (getActivity() instanceof MainScreen) {
             MainScreen mainScreen = (MainScreen) getActivity();
             Objects.requireNonNull(mainScreen.getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         }
-        DatabaseQueries queries = new DatabaseQueries(getContext(),selectedDateNotifications,notifications);
+
         //Introduce in baza de date
         mSave.setOnClickListener((View view) -> {
-            ToDoModel newModel = new ToDoModel(Objects.requireNonNull(description.getText()).toString().trim(),timeWrapper.getCurrentDate(), false, mPhoto,false,selectedDateNotifications.finalTimeInMilli());
-            if (description.getText().toString().trim().isEmpty()) {
-                alertFieldsNotCompeleted("Description");
-            } else if (dateTextView.getText().toString().trim().isEmpty() && timeWrapper.isDateDifferenceNegative() == 100) {
-                alertFieldsNotCompeleted("Date");
-            }else if( timeWrapper.isDateDifferenceNegative() == -100){
-                alertFieldsNotCompeleted("Date");
-        }else if(selectedDateNotifications.finalTimeInMilli() == -1){
-              //cand perioada notificarilor e mai mare decat timpul pana la final
-            }else {
-                queries.insertNewModel(newModel);
-            }
-            AsyncTask.execute(() -> {
-            if(selectedDateNotifications.finalTimeInMilli() != -1 && selectedDateNotifications.finalTimeInMilli() !=0){
-               queries.periodicNotif();
-            }else{
-                //Nu avem notificare periodica
-             }
-            });
+           dbInsert();
         });
         return v;
     }
@@ -178,6 +158,30 @@ public class FragmentAddItem extends Fragment  {
         }
     }
 
-
-
+    public void dbInsert(){
+        Notifications notifications = new Notifications(getContext());
+        DatabaseQueries queries = new DatabaseQueries(getContext(),selectedDateNotifications,notifications);
+        ToDoModel newModel = new ToDoModel(Objects.requireNonNull(description.getText()).toString().trim(),timeWrapper.getCurrentDate(), false, mPhoto,false,selectedDateNotifications.finalTimeInMilli());
+        if (description.getText().toString().trim().isEmpty()) {
+            alertFieldsNotCompeleted("Description");
+        } else if (dateTextView.getText().toString().trim().isEmpty() && timeWrapper.isDateDifferenceNegative() == 100) {
+            alertFieldsNotCompeleted("Date");
+        }else if( timeWrapper.isDateDifferenceNegative() == -100){
+            alertFieldsNotCompeleted("Date");
+        }else if(selectedDateNotifications.finalTimeInMilli() == -1){
+            Toast.makeText(getContext(), "Timpul notificarilor e mai mare decat timpul final", Toast.LENGTH_SHORT).show();
+        }else if(selectedDateNotifications.finalTimeInMilli() == 10) {
+            Toast.makeText(getContext(), "Nu se poate pute o notificare mai mica de 15 minute", Toast.LENGTH_SHORT).show();
+        }else{
+            queries.insertNewModel(newModel);
+            queries.sendExpireNotification();
+        }
+        AsyncTask.execute(() -> {
+            if(selectedDateNotifications.finalTimeInMilli() != -1 && selectedDateNotifications.finalTimeInMilli() !=0){
+                queries.periodicNotif();
+            }else{
+                //Nu avem notificare periodica
+            }
+        });
+    }
 }

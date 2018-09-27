@@ -90,8 +90,8 @@ public class MainScreen extends AppCompatActivity  {
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPageAdapter adapter = new ViewPageAdapter(getSupportFragmentManager());
-        adapter.addFrag(new RecylerViewNotDone(),"Not Done");
-        adapter.addFrag(new RecyclerViewDone(),"Done");
+        adapter.addFrag(new RecylerViewNotDone(),"In Progress");
+        adapter.addFrag(new RecyclerViewDone(),"Expired");
         viewPager.setAdapter(adapter);
     }
 

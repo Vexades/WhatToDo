@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v4.app.NotificationCompat;
 
 import com.example.ionut.whattodo.MainScreen;
@@ -24,8 +25,11 @@ import com.example.ionut.whattodo.database.ToDoDatabase;
         long x = intent.getLongExtra("test", 0);
          boolean paused = intent.getBooleanExtra("paused", false);
         final ToDoDatabase db = ToDoDatabase.getInstance(context);
+        int isDone = intent.getIntExtra("cancelPeriodic",0);
          int uniqueId = intent.getIntExtra("unique", 0);
-        //  AsyncTask.execute(() -> db.toDoDao().updateById(Integer.parseInt(getId), true));
+         if(isDone == 1) {
+             AsyncTask.execute(() -> db.toDoDao().updateById(getId, true));
+         }
          NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder notification = new NotificationCompat.Builder(context)
                 .setContentTitle(message)
