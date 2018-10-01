@@ -5,16 +5,13 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.DatePicker;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
-import com.example.ionut.whattodo.Notifications;
 import com.example.ionut.whattodo.R;
 
 import java.text.SimpleDateFormat;
@@ -45,8 +42,7 @@ public class TimeWrapper implements   DatePickerDialog.OnDateSetListener, TimePi
     private final TextView view;
 
 
-    public TimeWrapper(final ImageView imageView, TextView textView, TextView dateTextView, Context context, SelectedDateNotifications selectedDateNotifications, LinearLayout linearLayout) {
-        ImageView imageView1 = imageView;
+    public TimeWrapper(TextView textView, TextView dateTextView, Context context, SelectedDateNotifications selectedDateNotifications, LinearLayout linearLayout) {
         this.context = context;
         this.dateTextView = dateTextView;
         this.view = textView;
@@ -121,15 +117,6 @@ public class TimeWrapper implements   DatePickerDialog.OnDateSetListener, TimePi
         }
     }
 
-    private int returnMaxTime(){
-        Notifications notifications = new Notifications(context);
-        if(currentDate == null){
-            return notifications.returnMaxTime(new Date());
-        }else {
-            return notifications.returnMaxTime(currentDate);
-        }
-    }
-
     public void openDatePicker() {
         final GregorianCalendar calendar = new GregorianCalendar();
         calendar.setTime(currentDate);
@@ -154,10 +141,9 @@ public class TimeWrapper implements   DatePickerDialog.OnDateSetListener, TimePi
         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         calendar.set(Calendar.MINUTE, minute);
         currentDate = calendar.getTime();
-        Notifications notifications = new Notifications(context);
         dateTextView.setVisibility(VISIBLE);
-        dateTextView.setText(notifications.getTimeTillFinish(currentDate));
-        timeSetVariable(notifications.getTimeTillFinish(currentDate));
+        dateTextView.setText(getTimeTillFinish(currentDate));
+        timeSetVariable(getTimeTillFinish(currentDate));
         isTimeChosen = true;
         setDate();
         selectedDateNotifications.setDate(currentDate.getTime());
@@ -165,22 +151,49 @@ public class TimeWrapper implements   DatePickerDialog.OnDateSetListener, TimePi
 
         //Arata editurile tastaturii
         isTimeChosen = true;
-       // returnMaxType = returnMaxTime();
     }
 
     public void timeSetVariable(String setTimeVariable){
         this.setTimeVariable = setTimeVariable;
     }
 
-    public String getSetTimeVariable(){
-        return this.setTimeVariable;
-    }
-
-
-
-
     public Date getCurrentDate() {
         return currentDate;
+    }
+
+    private String getTimeTillFinish(Date date) {
+        final int oneHour = 3600000;
+        final int oneDay = 86400000;
+        int reminderMinutes;
+        int reminderHours;
+        Date currentDate = new Date();
+        Date finishedDate = new Date(date.getTime());
+        float differenceInMilli = finishedDate.getTime() - currentDate.getTime();
+        if (differenceInMilli <= 0) {
+            Toast.makeText(context, "Date chose in in the past", Toast.LENGTH_SHORT).show();
+        } else {
+            if (differenceInMilli < oneHour) {
+                int convertedMinutes = (int) (differenceInMilli / 60000);
+                if (convertedMinutes < 10) {
+                    return String.valueOf("Due time in 0" + convertedMinutes + ":00 Minutes");
+                } else {
+                    return String.valueOf("Due in " + convertedMinutes + ":00 Minutes");
+                }
+            } else if (differenceInMilli >= oneHour && differenceInMilli <= oneDay) {
+                long convertedHours = (long) (differenceInMilli / 3600000);
+                long convertedReminder = (long) (differenceInMilli % 3600000);
+                reminderMinutes = (int) (convertedReminder / 60000);
+                return String.valueOf("Due in " + convertedHours + " Hours and " + reminderMinutes + " minutes");
+            } else if (differenceInMilli >= oneDay) {
+                long convertedDays = (long) (differenceInMilli / 86400000);
+                long convertedReminder = (long) (differenceInMilli % 86400000);
+                reminderHours = (int) (convertedReminder / 3600000);
+                long convertedMinutes = convertedReminder % 3600000;
+                int minutes = (int) (convertedMinutes / 60000);
+                return String.valueOf("Due in " + convertedDays + " days " + reminderHours + " hours and " + minutes + " minutes");
+            }
+        }
+        return null;
     }
 
 

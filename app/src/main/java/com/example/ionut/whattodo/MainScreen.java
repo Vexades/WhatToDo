@@ -1,27 +1,23 @@
 package com.example.ionut.whattodo;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.animation.Animation;
 
 import com.example.ionut.whattodo.fragments.FragmentAddItem;
 import com.example.ionut.whattodo.fragments.LockableViewPager;
-//import com.example.ionut.whattodo.fragments.fragmentePrelucrare.EditFragment;
+import com.example.ionut.whattodo.fragments.ViewPageAdapter;
 import com.example.ionut.whattodo.fragments.fragmenteTab.RecyclerViewDone;
 import com.example.ionut.whattodo.fragments.fragmenteTab.RecylerViewNotDone;
-import com.example.ionut.whattodo.fragments.ViewPageAdapter;
+
+//import com.example.ionut.whattodo.fragments.fragmentePrelucrare.EditFragment;
 
 public class MainScreen extends AppCompatActivity  {
 
@@ -29,7 +25,7 @@ public class MainScreen extends AppCompatActivity  {
     private static final String ADD_NOTE_FRAGMENT_TAG = "addNoteFragment";
     private FloatingActionButton fab;
     private final FragmentManager fragmentManager = getSupportFragmentManager();
-    private Fragment fragment2 = fragmentManager.findFragmentById(R.id.frameLayout);
+
 
 
 
@@ -51,26 +47,18 @@ public class MainScreen extends AppCompatActivity  {
     }
 
 
-    //Creem un meniu
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return true;
-    }
-
-
     //Creem la o apasare de buton un fragment
     @SuppressLint("RestrictedApi")
     public void changeFragment(View v) {
         Animation anim = android.view.animation.AnimationUtils.loadAnimation(fab.getContext(), R.anim.shake);
-        if (fragment2 == null) {
+         Fragment fragment = fragmentManager.findFragmentById(R.id.frameLayout);
+        if (fragment == null) {
             anim.setDuration(200L);
             fab.startAnimation(anim);
-            fragment2 = new FragmentAddItem();
-            fragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_left,R.anim.slide_out_left,R.anim.slide_out_right,R.anim.slide_right).add(R.id.frameLayout, fragment2, ADD_NOTE_FRAGMENT_TAG).addToBackStack(null).commit();
+            fragment = new FragmentAddItem();
+            fragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_left,R.anim.slide_out_left,R.anim.slide_out_right,R.anim.slide_right).add(R.id.frameLayout, fragment, ADD_NOTE_FRAGMENT_TAG).addToBackStack(null).commit();
         } else {
-            fragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_left,R.anim.slide_out_left,R.anim.slide_out_right,R.anim.slide_right).add(R.id.frameLayout, fragment2, ADD_NOTE_FRAGMENT_TAG).addToBackStack(null).commit();
+            fragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_left,R.anim.slide_out_left,R.anim.slide_out_right,R.anim.slide_right).add(R.id.frameLayout, fragment, ADD_NOTE_FRAGMENT_TAG).addToBackStack(null).commit();
         }
     }
 
@@ -95,13 +83,6 @@ public class MainScreen extends AppCompatActivity  {
         viewPager.setAdapter(adapter);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.i("destory","destoryeed");
-        SharedPreferences sharedPref =this.getPreferences(Context.MODE_PRIVATE);
-        sharedPref.edit().remove("test").clear().commit();
-    }
 }
 
 

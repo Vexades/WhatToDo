@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -40,6 +41,7 @@ public class RecyclerViewClass extends RecyclerView.Adapter<RecyclerViewClass.My
 
     private final Context context;
     public ImageView photo;
+    long finalDateLong;
 
 
     public RecyclerViewClass(List<ToDoModel> toDoModels, Context context) {
@@ -83,6 +85,7 @@ public class RecyclerViewClass extends RecyclerView.Adapter<RecyclerViewClass.My
         final ImageView notification_on;
         private final TextView time_left;
         final TextView mTodo;
+        private View colorIndicator;
 
         MyHolder(@NonNull View itemView) {
             super(itemView);
@@ -92,6 +95,7 @@ public class RecyclerViewClass extends RecyclerView.Adapter<RecyclerViewClass.My
             calendar_text = itemView.findViewById(R.id.calendar_text);
             time_text = itemView.findViewById(R.id.time_text);
             time_left = itemView.findViewById(R.id.time_left);
+            colorIndicator = itemView.findViewById(R.id.verticalBar);
         }
 
         private void bindWitouhtImage(ToDoModel toDoModel) {
@@ -152,7 +156,8 @@ public class RecyclerViewClass extends RecyclerView.Adapter<RecyclerViewClass.My
 
             calendar_text.setText((formatOnlyDate(toDoModel.getmDate())));
             time_text.setText((formatOnlyTime(toDoModel.getmDate())));
-            time_left.setText((timeLeft(toDoModel.getmDate())));
+             finalDateLong = (toDoModel.getmDate().getTime());
+             time_left.setText(timeLeft(toDoModel.getmDate(),colorIndicator));
 
         }
     }
@@ -168,14 +173,17 @@ public class RecyclerViewClass extends RecyclerView.Adapter<RecyclerViewClass.My
     }
 
     @SuppressLint("CheckResult")
-    private String timeLeft(Date date) {
+    private String timeLeft(Date date,View v) {
         long minute = 60000;
         long hour = 3600000;
         long day = 86400000;
         long converterd;
 
-        Date current = new Date();
-        long diff = date.getTime() - current.getTime();
+
+
+
+        long diff = date.getTime() - new Date().getTime();
+
 
         if (diff > minute && diff < hour) {
             converterd = diff / minute;
@@ -189,7 +197,13 @@ public class RecyclerViewClass extends RecyclerView.Adapter<RecyclerViewClass.My
                 io.reactivex.Observable.interval(1, TimeUnit.MINUTES)
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(a -> notifyDataSetChanged());
+                        .subscribe(a -> {
+                            long diffCurrent = finalDateLong - new Date().getTime();
+                             if (diffCurrent < diff/2){
+                                v.setBackgroundColor(Color.parseColor("#FF8E2020"));
+                            }
+                            notifyDataSetChanged();
+                        });
                 return String.valueOf(converterd) + " minutes remaining";
             }
         } else if (diff > hour && diff < day) {
@@ -239,5 +253,6 @@ public class RecyclerViewClass extends RecyclerView.Adapter<RecyclerViewClass.My
         assert alarm != null;
         alarm.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis()+timeOfPeriodicNotif, timeOfPeriodicNotif, pendingIntent);
     }
+
 
 }

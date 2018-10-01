@@ -5,7 +5,7 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
-@Database(entities = {ToDoModel.class},version = 15,exportSchema = false)
+@Database(entities = {ToDoModel.class},version = 17,exportSchema = false)
 public abstract class ToDoDatabase extends RoomDatabase{
     public abstract ToDoDao toDoDao();
 
@@ -17,7 +17,7 @@ public abstract class ToDoDatabase extends RoomDatabase{
         if(INSTANCE == null){
             synchronized (ToDoDatabase.class){
                 if(INSTANCE == null){
-                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(),ToDoDatabase.class,"todo_database").fallbackToDestructiveMigration().build();
+                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(),ToDoDatabase.class,"todo_database").build();
                 }
             }
         }

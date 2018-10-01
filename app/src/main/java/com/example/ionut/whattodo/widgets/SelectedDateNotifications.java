@@ -6,20 +6,22 @@ import android.support.design.widget.TextInputEditText;
 import android.text.Editable;
 import android.text.TextWatcher;
 
+import com.example.ionut.whattodo.helpers.SelectedDateNotificationEnum;
+
 import java.util.Date;
 import java.util.Objects;
 
-public class SelectedDateNotifications implements TextWatcher {
+public class SelectedDateNotifications implements TextWatcher{
     private long date;
     private TextInputEditText hoursInput;
     private  TextInputEditText minutesInput;
     private  TextInputEditText daysInput;
     private final Context context;
-    private int justToKeepReffrence = 1;
 
-    public SelectedDateNotifications(final Context context){
+    public SelectedDateNotifications( Context context){
         this.context = context;
     }
+
 
     public TextInputEditText getHoursInput() {
         return hoursInput;
@@ -63,21 +65,21 @@ public class SelectedDateNotifications implements TextWatcher {
         try {
             if (!Objects.requireNonNull(getDaysInput().getText()).toString().equals("")  && getDate() > 0) {
                 if (Integer.valueOf(getDaysInput().getText().toString().trim()) > convertToDays()) {
-                   justToKeepReffrence = 0;
+
                    tooLargeNumber(convertToDays(), Integer.parseInt(getDaysInput().getText().toString().trim()), "days");
                 }
             }
 
             if (!Objects.requireNonNull(getHoursInput().getText()).toString().equals("")  && getDate() > 0) {
                 if (Integer.valueOf(getHoursInput().getText().toString().trim()) > convertToHours()) {
-                   justToKeepReffrence = 0;
+
                     tooLargeNumber(convertToHours(), Integer.parseInt(getHoursInput().getText().toString().trim()), "hours");
                 }
             }
 
             if (!Objects.requireNonNull(minutesInput.getText()).toString().equals("") && getDate() > 0) {
                 if (Integer.valueOf(minutesInput.getText().toString().trim()) > convertToMinutes()) {
-                   justToKeepReffrence = 0;
+
                     tooLargeNumber(convertToMinutes(), Integer.parseInt(minutesInput.getText().toString().trim()), "minutes");
                 }
             }
@@ -121,9 +123,10 @@ public class SelectedDateNotifications implements TextWatcher {
                     Objects.requireNonNull(getMinutesInput().getText()).toString().trim().isEmpty()
                     && Objects.requireNonNull(getHoursInput().getText()).toString().trim().isEmpty()) {
                 return 0;
-            } else if( Integer.valueOf(getMinutesInput().getText().toString()) < 15 ){
+            } else if( Integer.valueOf(getMinutesInput().getText().toString()) < 1 ){
                 return 10;
             }else if(differenceInMilli >= totalInput ){
+                SelectedDateNotificationEnum.INSTANCE.setDate(totalInput);
                 return totalInput;
             }else {
                 return -1;
